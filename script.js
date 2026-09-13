@@ -8,16 +8,21 @@ function escapeHtml(value = "") {
     }[char]));
 }
 
+
+// =========================
+// Research listing
+// =========================
+
 async function loadResearch() {
     const list = document.getElementById("research-list");
 
     if (!list) return;
 
     const { data, error } = await supabaseClient
-    .from("research")
-    .select("*")
-    .eq("status", "published")
-    .order("date", { ascending: false });
+        .from("research")
+        .select("*")
+        .eq("status", "published")
+        .order("date", { ascending: false });
 
     if (error) {
         console.error("Supabase error:", error);
@@ -31,16 +36,27 @@ async function loadResearch() {
     }
 
     list.innerHTML = data.map((item, index) => `
-        <a class="research-card" href="projects.html">
-            <span class="card-number">${String(index + 1).padStart(2, "0")}</span>
+        <a
+            class="research-card"
+            href="research-project.html?slug=${encodeURIComponent(item.slug || "")}"
+        >
+            <span class="card-number">
+                ${String(index + 1).padStart(2, "0")}
+            </span>
+
             <h3>${escapeHtml(item.title || "")}</h3>
+
             <p>${escapeHtml(item.abstract || "")}</p>
+
             <span class="card-arrow">→</span>
         </a>
     `).join("");
 }
 
-loadResearch();
+
+// =========================
+// Individual research project
+// =========================
 
 async function loadResearchProject() {
 
@@ -49,7 +65,6 @@ async function loadResearchProject() {
     if (!titleElement) return;
 
     const params = new URLSearchParams(window.location.search);
-
     const slug = params.get("slug");
 
     if (!slug) {
@@ -76,12 +91,8 @@ async function loadResearchProject() {
         return;
     }
 
-
-    // Page title
     document.title = `${data.title} | Numlar`;
 
-
-    // Main information
     document.getElementById("research-title").textContent =
         data.title || "";
 
@@ -91,8 +102,6 @@ async function loadResearchProject() {
     document.getElementById("research-abstract").textContent =
         data.abstract || "";
 
-
-    // Metadata
     document.getElementById("research-meta-category").textContent =
         data.category || "—";
 
@@ -102,8 +111,6 @@ async function loadResearchProject() {
     document.getElementById("research-status").textContent =
         data.status || "—";
 
-
-    // Full content
     document.getElementById("research-full-abstract").textContent =
         data.abstract || "";
 
@@ -112,4 +119,9 @@ async function loadResearchProject() {
 }
 
 
+// =========================
+// Start
+// =========================
+
+loadResearch();
 loadResearchProject();
