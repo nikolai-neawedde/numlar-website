@@ -41,3 +41,75 @@ async function loadResearch() {
 }
 
 loadResearch();
+
+async function loadResearchProject() {
+
+    const titleElement = document.getElementById("research-title");
+
+    if (!titleElement) return;
+
+    const params = new URLSearchParams(window.location.search);
+
+    const slug = params.get("slug");
+
+    if (!slug) {
+        titleElement.textContent = "Research project not found";
+        return;
+    }
+
+    const { data, error } = await supabaseClient
+        .from("research")
+        .select("*")
+        .eq("slug", slug)
+        .eq("status", "published")
+        .single();
+
+    if (error || !data) {
+
+        console.error("Research project error:", error);
+
+        titleElement.textContent = "Research project not found";
+
+        document.getElementById("research-abstract").textContent =
+            "The requested research project could not be found.";
+
+        return;
+    }
+
+
+    // Page title
+    document.title = `${data.title} | Numlar`;
+
+
+    // Main information
+    document.getElementById("research-title").textContent =
+        data.title || "";
+
+    document.getElementById("research-category").textContent =
+        (data.category || "RESEARCH").toUpperCase();
+
+    document.getElementById("research-abstract").textContent =
+        data.abstract || "";
+
+
+    // Metadata
+    document.getElementById("research-meta-category").textContent =
+        data.category || "—";
+
+    document.getElementById("research-date").textContent =
+        data.date || "—";
+
+    document.getElementById("research-status").textContent =
+        data.status || "—";
+
+
+    // Full content
+    document.getElementById("research-full-abstract").textContent =
+        data.abstract || "";
+
+    document.getElementById("research-content-text").textContent =
+        data.content || "";
+}
+
+
+loadResearchProject();
