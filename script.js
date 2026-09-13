@@ -36,21 +36,16 @@ async function loadResearch() {
     }
 
     list.innerHTML = data.map((item, index) => `
-        <a
-            class="research-card"
-            href="research-project.html?slug=${encodeURIComponent(item.slug || "")}"
-        >
-            <span class="card-number">
-                ${String(index + 1).padStart(2, "0")}
-            </span>
-
-            <h3>${escapeHtml(item.title || "")}</h3>
-
-            <p>${escapeHtml(item.abstract || "")}</p>
-
-            <span class="card-arrow">→</span>
-        </a>
-    `).join("");
+    <a
+        class="research-card"
+        href="research-project.html?slug=${encodeURIComponent(item.slug || "")}"
+    >
+        <span class="card-number">${String(index + 1).padStart(2, "0")}</span>
+        <h3>${escapeHtml(item.title || "")}</h3>
+        <p>${escapeHtml(item.abstract || "")}</p>
+        <span class="card-arrow">→</span>
+    </a>
+`).join("");
 }
 
 
