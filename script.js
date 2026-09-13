@@ -16,7 +16,6 @@ async function loadResearch() {
     const { data, error } = await supabaseClient
     .from("research")
     .select("*")
-    .eq("status", "published")
     .order("date", { ascending: false });
 
     if (error) {
